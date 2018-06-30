@@ -1,29 +1,29 @@
-import firebase from "firebase";
+import MessengerService  from "./MessengerService";
+import Firebase from "firebase";
 
-class Backend {
-    uid = "";
-    messagesRef = null;
-
+class FirebaseMessager extends MessengerService {
     constructor() {
-        const config = {
+        super();
+        this.uid = "";
+        this.messagesRef = null;
+        Firebase.initializeApp({
             apiKey: "AIzaSyCMLh5KI8ceIzaJ-u9Z_gbeeOMZmVRBSsU",
             authDomain: "test-63853.firebaseapp.com",
             databaseURL: "https://test-63853.firebaseio.com",
             projectId: "test-63853",
             storageBucket: "test-63853.appspot.com",
-            messagingSenderId: "1097423677710"
-        };
-        firebase.initializeApp(config);
-        firebase.auth().onAuthStateChanged((user) => {
+            messagingSenderId: "1097423677710",
+        });
+        Firebase.auth().onAuthStateChanged((user) => {
             if(user)
                 this.setUid(user.uid);
             else
-                firebase.auth().signInAnonymously().catch((e) => { alert(e.message); });
+                Firebase.auth().signInAnonymously().catch((e) => { alert(e.message); });
         });
     }
 
-    setUid(value) {
-        this.uid = value;
+    setUid(uid) {
+        this.uid = uid;
     }
 
     getUid() {
@@ -31,7 +31,7 @@ class Backend {
     }
 
     loadMessages(callback) {
-        this.messagesRef = firebase.database().ref("messages");
+        this.messagesRef = Firebase.database().ref("messages");
         this.messagesRef.off();
         const onReceive = (data) => {
             const message = data.val();
@@ -53,7 +53,7 @@ class Backend {
             this.messagesRef.push({
                 text: message[i].text,
                 user: message[i].user,
-                createdAt: firebase.database.ServerValue.TIMESTAMP,
+                createdAt: Firebase.database.ServerValue.TIMESTAMP,
             });
         }
     }
@@ -65,4 +65,4 @@ class Backend {
     }
 }
 
-export default new Backend();
+export default FirebaseMessager;
