@@ -1,6 +1,8 @@
 import React from "react";
 import { GiftedChat } from 'react-native-gifted-chat'
 
+import Backend from "../services/Backend";
+
 export default class Chat extends React.Component {
   state = {
     messages: [],
